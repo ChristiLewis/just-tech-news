@@ -1,6 +1,11 @@
+const router = require('express').Router();
+const { User } = require('../../models');
+
+/*
 const { Router } = require("express");
 const { route } = require("express/lib/application");
-const { UPSERT } = require("sequelize/types/query-types");
+const { USER } = require("sequelize/types/query-types");
+*/
 
 //GET ALL USERS
 router.get('/', (req, res) => {
@@ -35,7 +40,7 @@ router.get('/:id', (req,res) => {
 });
 
 //POST ROUTE TO CREATE A USER
-route.post('/', (req,res) => {
+router.post('/', (req,res) => {
     //ALL INFO FROM USER MODEL TABLE IE USERNAME, EMAIL, PASSWORD THIS SEQUELIZE METHOD .CREATE() IS SIM TO SQL COMMANDS: 
     /*
     INSERT INTO users
@@ -58,7 +63,7 @@ route.post('/', (req,res) => {
 //PUT ROUTE TO UPDATE EXISTING DATA USES SEQUELIZE .UPDATE() METHOD COMBINING PARAMETERS FOR BOTH CREATING AND LOOKING-UP DATA BY PASSING-IN BOTH REQ.BODY AND REQ.PARAMS.ID. THE SQL EQUIVALENT:
 /*
 UPDATE users
-SET username = "Lernantino", email = "<ACTUAL.EMAIL>", password = "<ACTUAL-PASSWD>"
+SET username = "<ACTUAL-NAME>", email = "<ACTUAL.EMAIL>", password = "<ACTUAL-PASSWD>"
 WHERE id = 1;
 */
 router.put('/:id', (req, res) => {
