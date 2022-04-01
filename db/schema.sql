@@ -1,0 +1,5 @@
+-- DROP DATABASE
+DROP DATABASE IF EXISTS just_tech_news_db;
+
+-- CREATE DATABASE
+CREATE DATABASE just_tech_news_db;
