@@ -1,4 +1,7 @@
 //IMPORT LIBRARIES
+//PASSWORD PROTECTION BCRYPT
+const bcrypt = require('bcrypt');
+
 const { Model, DataTypes } = require('sequelize');
 
 //IMPORT DB CONNECTION FROM CONFIG - CONNECTION.JS
@@ -6,6 +9,8 @@ const sequelize = require('../config/connection');
 
 //INITIALIZE USER MODEL - EXTEND OFF SEQUELIZE'S MODEL CLASS
 class User extends Model {}
+
+//ADD ASYNC-AWAIT VERSION OF HOOKS FUNCTION
 
 //SET UP USER MODEL RULES
 User.init(
@@ -51,6 +56,19 @@ User.init(
        }
     },
     {
+        //ADD HOOKS FOR BCRYPT USE- WITH ASYNC-AWAIT SYNTAX
+        hooks: {
+            //BEFORECREATE LIFECYCLE HOOK FUNCTIONALITY
+            async beforeCreate(newUserData) {
+                newUserData.password = await bcrypt.hashSync(newUserData.password, 10);
+                return newUserData;
+            },
+            //BEFOREUPDATE LIFECYCLE HOOK FUNCTIONALITY
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hashSync(updatedUserData.password, 10);
+                return updatedUserData;
+            },
+        },
         //TABLE CONFIG OPTIONS
         //SEQUELIZE CONNECTION
         sequelize,
@@ -64,5 +82,10 @@ User.init(
         modelName: 'user'
     }
 );
+
+//BCRYPT HASHING ASYNC WITH PROMISE CALLBACK - CODE FROM BCRYPT DOCUMENTATION https://www.npmjs.com/package/bcrypt
+// bcrypt.hash(myPlaintextPassword, saltRounds).then(function(hash) {
+//     // Store hash in your password DB.
+// });
 
 module.exports = User;

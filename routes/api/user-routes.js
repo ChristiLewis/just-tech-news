@@ -71,7 +71,10 @@ WHERE id = 1;
 */
 router.put('/:id', (req, res) => {
     //EXPECTS KEY/VALUE PAIRS TO MATCH MODEL
+    //PASS-IN REQ.BODY INSTEAD TO ONLY UPDATE WHAT IS PASSED THROUGH
     User.update(req.body, {
+        //ADDING CODE TO UPDATE HOOKS FOR BCRYPT
+        individualHooks: true,
         where: {
             id: req.params.id
         }
