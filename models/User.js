@@ -1,8 +1,8 @@
 //IMPORT LIBRARIES
-const { Model, Dataypes, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 
 //IMPORT DB CONNECTION FROM CONFIG - CONNECTION.JS
-const sequelize = require('../config/connection.js');
+const sequelize = require('../config/connection');
 
 //INITIALIZE USER MODEL - EXTEND OFF SEQUELIZE'S MODEL CLASS
 class User extends Model {}

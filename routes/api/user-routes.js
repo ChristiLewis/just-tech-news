@@ -10,18 +10,21 @@ const { USER } = require("sequelize/types/query-types");
 //GET ALL USERS
 router.get('/', (req, res) => {
     //ACCESS USER MODEL AND USE .FINDALL() METHOD SIM TO SQL COMMAND: SELECT * FROM users;
-    User.findAll()
-    .then(dbUserData => res.json(dbUserData))
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+    User.findAll({
+        attributes: { exclude: ['password'] }
+    })
+        .then(dbUserData => res.json(dbUserData))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
 
 //GET ONE USER AT A TIME SIM TO SQL: SELECT * FROM users WHERE id = 1
-router.get('/:id', (req,res) => {
+router.get('/:id', (req, res) => {
     //SEQUELIZE .FINDONE() METHOD
     User.findOne({
+        attributes: { exclude: ['password'] },
         where: {
             id: req.params.id
         }
@@ -40,7 +43,7 @@ router.get('/:id', (req,res) => {
 });
 
 //POST ROUTE TO CREATE A USER
-router.post('/', (req,res) => {
+router.post('/', (req, res) => {
     //ALL INFO FROM USER MODEL TABLE IE USERNAME, EMAIL, PASSWORD THIS SEQUELIZE METHOD .CREATE() IS SIM TO SQL COMMANDS: 
     /*
     INSERT INTO users
@@ -75,7 +78,7 @@ router.put('/:id', (req, res) => {
     })
         .then(dbUserData => {
             if (!dbUserData[0]) {
-                res.status(404).json({ message: 'No user found with this id.' });
+                res.status(404).json({ message: 'No user found with this id' });
                 return;
             }
             res.json(dbUserData);
@@ -93,15 +96,17 @@ router.delete('/:id', (req, res) => {
             id: req.params.id
         }
     })
-    .then(dbUserData => {
-        if (!dbUserData) {
-            res.status(404).json({ message: 'No user found with this id.' });
-            return;
-        }
-        res.json(dbUserData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+        .then(dbUserData => {
+            if (!dbUserData) {
+                res.status(404).json({ message: 'No user found with this id' });
+                return;
+            }
+            res.json(dbUserData);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        });
 });
+
+module.exports = router;
