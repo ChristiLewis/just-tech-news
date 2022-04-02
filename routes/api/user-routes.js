@@ -11,8 +11,8 @@ const { USER } = require("sequelize/types/query-types");
 router.get('/', (req, res) => {
     //ACCESS USER MODEL AND USE .FINDALL() METHOD SIM TO SQL COMMAND: SELECT * FROM users;
     User.findAll({
-        attributes: { exclude: ['password'] }
-    })
+            attributes: { exclude: ['password'] }
+        })
         .then(dbUserData => res.json(dbUserData))
         .catch(err => {
             console.log(err);
@@ -24,11 +24,11 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
     //SEQUELIZE .FINDONE() METHOD
     User.findOne({
-        attributes: { exclude: ['password'] },
-        where: {
-            id: req.params.id
-        }
-    })
+            attributes: { exclude: ['password'] },
+            where: {
+                id: req.params.id
+            }
+        })
         .then(dbUserData => {
             if (!dbUserData) {
                 res.status(404).json({ message: 'No user found with this id' });
@@ -52,15 +52,37 @@ router.post('/', (req, res) => {
         ("<actual username>", "<actual email>", "<actual password>");
     */
     User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password
-    })
+            username: req.body.username,
+            email: req.body.email,
+            password: req.body.password
+        })
         .then(dbUserData => res.json(dbUserData))
         .catch(err => {
             console.log(err);
             res.status(500).json(err);
         });
+});
+
+//VERIFY NEW USERS WITH A QUERY IN A POST ROUTE SINCE INFO IS IN THE MORE SECURE BODY OF THE CODE RATHER THAN IN THE URL LIKE A GET ROUTE
+router.post('/login', (req, res) => {
+    //EXPECTS {EMAIL" 'XYZ@GMAIL.COM', PASSWORD: 'PASSWORD1234'}
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    }).then(dbUserData => {
+        if (!dbUserData) {
+            res.status(400).json({ message: 'No user with that email address!' });
+            return;
+        }
+        //VERIFY USER CODE TO SYNC WITH BCRYPT
+        const validPassword = dbUserData.checkPassword(req.body.password);
+        if (!validPassword) {
+            res.status(400).json({ message: 'Incorrect password!' });
+            return;
+        }
+        res.json({ user: dbUserData, message: 'You are now logged in!' });
+    });
 });
 
 //PUT ROUTE TO UPDATE EXISTING DATA USES SEQUELIZE .UPDATE() METHOD COMBINING PARAMETERS FOR BOTH CREATING AND LOOKING-UP DATA BY PASSING-IN BOTH REQ.BODY AND REQ.PARAMS.ID. THE SQL EQUIVALENT:
@@ -73,12 +95,12 @@ router.put('/:id', (req, res) => {
     //EXPECTS KEY/VALUE PAIRS TO MATCH MODEL
     //PASS-IN REQ.BODY INSTEAD TO ONLY UPDATE WHAT IS PASSED THROUGH
     User.update(req.body, {
-        //ADDING CODE TO UPDATE HOOKS FOR BCRYPT
-        individualHooks: true,
-        where: {
-            id: req.params.id
-        }
-    })
+            //ADDING CODE TO UPDATE HOOKS FOR BCRYPT
+            individualHooks: true,
+            where: {
+                id: req.params.id
+            }
+        })
         .then(dbUserData => {
             if (!dbUserData[0]) {
                 res.status(404).json({ message: 'No user found with this id' });
@@ -95,10 +117,10 @@ router.put('/:id', (req, res) => {
 //DELETE A SPECIFIC USER FROM THE DB VIA THE SEQUELIZE .DESTROY() METHOD AND ID WHERE TO REMOVE DATA FROM THE USER DB TABLE
 router.delete('/:id', (req, res) => {
     User.destroy({
-        where: {
-            id: req.params.id
-        }
-    })
+            where: {
+                id: req.params.id
+            }
+        })
         .then(dbUserData => {
             if (!dbUserData) {
                 res.status(404).json({ message: 'No user found with this id' });
