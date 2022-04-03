@@ -47,5 +47,5 @@ Post.init({
         modelName: 'post'
     }
 );
-//EXPORT THE EXPRESSION
+
 module.exports = Post;
