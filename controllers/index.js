@@ -4,7 +4,7 @@ const router = require('express').Router();
 
 const apiRoutes = require('./api');
 
-//HOMEPAGE ROUTER.USE STATEMENT
+//HOMEPAGE ROUTER.USE STATEMENT COLLECTS THE PACKAGED API ENDPOINTS AND PREFIXES THEM JUST WITH "/" TO SIGNIFY THE HOMEPAGE
 const homeRoutes = require('./home-routes.js');
 
 router.use('/', homeRoutes);
