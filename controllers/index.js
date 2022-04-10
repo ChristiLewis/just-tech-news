@@ -4,6 +4,13 @@ const router = require('express').Router();
 
 const apiRoutes = require('./api');
 
+//HOMEPAGE ROUTER.USE STATEMENT COLLECTS THE PACKAGED API ENDPOINTS AND PREFIXES THEM JUST WITH "/" TO SIGNIFY THE HOMEPAGE
+const homeRoutes = require('./home-routes.js');
+
+router.use('/', homeRoutes);
+
+
+
 router.use('/api', apiRoutes);
 
 //ADDITIONAL STEP FOR THE API ROUTING INDEX-JS IS THIS WEEDING OUT PROCESS BEFORE IT REACHES AN ENDPOINT 
