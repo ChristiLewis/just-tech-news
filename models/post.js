@@ -54,6 +54,7 @@ Post.init({
     },
     user_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
             //REFERENCES THE MODELS/USER.JS FILE TO SET THE KEY ID OF THE USER MAKING THE POST
             model: 'user',

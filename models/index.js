@@ -6,6 +6,8 @@ const Post = require('./Post');
 
 const Vote = require('./Vote');
 
+const Comment = require('./Comment');
+
 //CREATE ASSOCIATIONS
 //BELOW DEFINES THE ONE: MANY RELATIONSHIP OF THE USER MODEL TO THE MANY POST MODEL
 User.hasMany(Post, {
@@ -46,5 +48,23 @@ Post.hasMany(Vote, {
     foreignKey: 'post_id'
 });
 
+//COMMENT ASSOCIATIONS MANY:MANY SIM TO VOTE ASSOCIATIONS ABOVE
+
+Comment.belongsTo(User, {
+    foreignKey: 'user_id'
+});
+
+Comment.belongsTo(Post, {
+    foreignKey: 'post_id'
+});
+
+User.hasMany(Comment, {
+    foreignKey: 'user_id'
+});
+
+Post.hasMany(Comment, {
+    foreignKey: 'post_id'
+});
+
 //EACH CONSTANT ADDED ABOVE TO BE REQUIRED IS ADDED TO THE ARRAY INSIDE THE CURLY BRACKETS BELOW
-module.exports = { User, Post, Vote };
+module.exports = { User, Post, Vote, Comment };
