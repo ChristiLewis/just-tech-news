@@ -42,6 +42,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(routes);
 
 //TURN ON CONNECTIONS TO THE DB AND SERVER- EARLY DEV FORCE: FALSE LATER DEV FORCE : TRUE TO SET ASSOCIATIONS - THEN BACK TO FALSE
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ force: true }).then(() => {
     app.listen(PORT, () => console.log('Now listening'));
 });
