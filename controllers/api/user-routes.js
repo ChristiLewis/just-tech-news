@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User, Post, Vote } = require("../../models");
 
 /*
 const { Router } = require("express");
@@ -26,21 +26,41 @@ router.get('/:id', (req, res) => {
     User.findOne({
         attributes: { exclude: ['password'] },
         where: {
-            id: req.params.id
-        }
-    })
-        .then(dbUserData => {
-            if (!dbUserData) {
-                res.status(404).json({ message: 'No user found with this id' });
-                return;
+          id: req.params.id
+        },
+        include: [
+          {
+            model: Post,
+            attributes: ['id', 'title', 'post_url', 'created_at']
+          },
+          {
+            model: Comment,
+            attributes: ['id', 'comment_text', 'created_at'],
+            include: {
+              model: Post,
+              attributes: ['title']
             }
-            res.json(dbUserData);
+          },
+          {
+            model: Post,
+            attributes: ['title'],
+            through: Vote,
+            as: 'voted_posts'
+          }
+        ]
+      })
+        .then(dbUserData => {
+          if (!dbUserData) {
+            res.status(404).json({ message: 'No user found with this id' });
+            return;
+          }
+          res.json(dbUserData);
         })
         .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
+          console.log(err);
+          res.status(500).json(err);
         });
-});
+    });
 
 //POST ROUTE TO CREATE A USER
 router.post('/', (req, res) => {
