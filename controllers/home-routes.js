@@ -16,15 +16,15 @@ router.get('/', (req, res) => {
             [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
         ],
         include: [
-            //ADD COMMENTS LATER
-            //   {
-            //     model: Comment,
-            //     attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-            //     include: {
-            //       model: User,
-            //       attributes: ['username']
-            //     }
-            //   },
+            // ADDING COMMENTS 
+              {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                include: {
+                  model: User,
+                  attributes: ['username']
+                }
+              },
             {
                 model: User,
                 attributes: ['username']
@@ -48,7 +48,11 @@ router.get('/', (req, res) => {
 
             //MAKE AN ARRAY OF THE JAVASCRIPT OBJECTS FOR HANDLEBARS TO USE
             const posts = dbPostData.map(post => post.get({ plain: true }));
-            res.render('homepage', { posts });
+            //CONDITIONALLY RENDER
+            res.render('homepage', {
+                posts,
+                loggedIn: req.session.loggedIn
+            });
         })
         .catch(err => {
             console.log(err);
@@ -94,7 +98,10 @@ router.get('/post/:id', (req, res) => {
             const post = dbPostData.get({ plain: true });
 
             // PASS DATA TO TEMPLATE
-            res.render('single-post', { post });
+            res.render('single-post', {
+                post,
+                loggedIn: req.session.loggedIn
+            });
         })
         .catch(err => {
             console.log(err);
@@ -102,6 +109,7 @@ router.get('/post/:id', (req, res) => {
         });
 });
 
+//ADD LOGIN HOME-ROUTE
 router.get('/login', (req, res) => {
     if (req.session.loggedIn) {
         res.redirect('/');
